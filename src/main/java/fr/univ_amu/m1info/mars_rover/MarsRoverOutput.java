@@ -1,0 +1,8 @@
+package fr.univ_amu.m1info.mars_rover;
+
+import java.util.List;
+
+public class MarsRoverOutput {
+    double percentageExplored;
+    List<MarsRoverState> finalRoverStates;
+}
