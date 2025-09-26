@@ -2,7 +2,6 @@ package fr.univ_amu.m1info.mars_rover;
 
 import java.util.List;
 
-public class MarsRoverInput {
-    GridConfiguration grid;
-    List<RoverConfiguration> rovers;
+public record MarsRoverInput(GridConfiguration grid, List<RoverConfiguration> rovers) {
+
 }
