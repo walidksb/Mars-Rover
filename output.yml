@@ -1,0 +1,14 @@
+percentageExplored: 28.0
+finalRoverStates:
+- position:
+    coordinates:
+      x: 1
+      "y": 3
+    orientation: NORTH
+  destroyed: false
+- position:
+    coordinates:
+      x: 4
+      "y": 3
+    orientation: EAST
+  destroyed: false
