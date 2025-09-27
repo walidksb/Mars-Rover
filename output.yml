@@ -3,12 +3,12 @@ finalRoverStates:
 - position:
     coordinates:
       x: 1
-      "y": 3
+      "y": 7
     orientation: NORTH
   destroyed: false
 - position:
     coordinates:
-      x: 4
+      x: 9
       "y": 3
     orientation: EAST
   destroyed: false

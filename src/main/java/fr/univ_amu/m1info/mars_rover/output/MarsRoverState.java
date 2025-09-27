@@ -1,4 +1,6 @@
-package fr.univ_amu.m1info.mars_rover;
+package fr.univ_amu.m1info.mars_rover.output;
+
+import fr.univ_amu.m1info.mars_rover.input.Position;
 
 public class MarsRoverState {
     boolean isDestroyed;

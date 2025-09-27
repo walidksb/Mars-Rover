@@ -1,4 +1,4 @@
-package fr.univ_amu.m1info.mars_rover;
+package fr.univ_amu.m1info.mars_rover.input;
 
 import java.util.List;
 

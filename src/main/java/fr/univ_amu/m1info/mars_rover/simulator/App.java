@@ -1,18 +1,18 @@
-package fr.univ_amu.m1info.mars_rover;
+package fr.univ_amu.m1info.mars_rover.simulator;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SequenceWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
+import fr.univ_amu.m1info.mars_rover.input.MarsRoverInput;
+import fr.univ_amu.m1info.mars_rover.output.MarsRoverOutput;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
 public class App {
         public static void main(String[] args) {
             final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory()
@@ -26,6 +26,8 @@ public class App {
                 System.out.println("Configuration chargée !");
                 System.out.println(marsRoverMarsRoverInput);
 
+                MarsRoverSimulator simulator = new MarsRoverSimulator();
+                /*
                 //Simulation
                 Coordinates c1 = new Coordinates(1, 3);
                 Position p1 = new Position(c1, Direction.NORTH);
@@ -36,7 +38,8 @@ public class App {
                 MarsRoverState state2 = new MarsRoverState(false, p2);
 
                 final MarsRoverOutput marsRoverOutput = new MarsRoverOutput(28.0, List.of(state1, state2));
-
+                */
+                MarsRoverOutput marsRoverOutput = simulator.simulate(marsRoverMarsRoverInput);
                 // Écriture du fichier output.yml
                 ObjectWriter writer = objectMapper.writer();
                 try (FileOutputStream fos = new FileOutputStream("output.yml");
@@ -44,7 +47,8 @@ public class App {
                      sw.write(marsRoverOutput);
                 }
 
-                System.out.println("Fichier 'output.yml' genere avec succes !");
+                //System.out.println("Fichier 'output.yml' genere avec succes !");
+                System.out.println("Simulation terminer !");
             } catch (IOException e) {
                 e.printStackTrace();
             }
