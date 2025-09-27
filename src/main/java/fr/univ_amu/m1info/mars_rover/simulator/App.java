@@ -42,7 +42,7 @@ public class App {
                 MarsRoverOutput marsRoverOutput = simulator.simulate(marsRoverMarsRoverInput);
                 // Écriture du fichier output.yml
                 ObjectWriter writer = objectMapper.writer();
-                try (FileOutputStream fos = new FileOutputStream("output.yml");
+                try (FileOutputStream fos = new FileOutputStream("FinalOutput.yml");
                      SequenceWriter sw = writer.writeValues(fos)) {
                      sw.write(marsRoverOutput);
                 }
