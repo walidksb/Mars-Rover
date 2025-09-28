@@ -9,9 +9,7 @@ import java.util.*;
 public class MarsRoverSimulator {
 
     public MarsRoverOutput simulate(MarsRoverInput input) {
-        // Exemple simulation simplifiée
         List<MarsRoverState> finalStates = new ArrayList<>();
-        // Set to keep all explored positions without repeating because its a set
         Set<Coordinates> explored = new HashSet<>();
 
         for (RoverConfiguration rover : input.rovers()) {
@@ -19,71 +17,88 @@ public class MarsRoverSimulator {
             boolean destroyed = false;
 
             explored.add(current.coordinates());
-
-            // Exécution fictive des commandes
-            // we check if the grid kind is rectangular or tornoidal
             GridConfiguration gridConf = input.grid();
 
-            // ////////////////////// RECTANGULAR /////////////////////////
-            if (gridConf.kind() == GridKind.RECTANGULAR) {
-                int i =0;
-                int maxX = gridConf.width() - 1;
-                int maxY = gridConf.height() - 1;
-                while (i < rover.commands().size() && !destroyed) {
-                    Command cmd = rover.commands().get(i);
-                    switch (cmd) {
-                        case MOVE -> {
-                            // exemple : avancer de 1 vers la direction actuelle
-                            Coordinates c = current.coordinates();
-                            int x = c.x();
-                            int y = c.y();
-                            switch (current.orientation()) {
-                                case NORTH -> y++;
-                                case SOUTH -> y--;
-                                case EAST -> x++;
-                                case WEST -> x--;
-                            }
-                            current = new Position(new Coordinates(x, y), current.orientation());
-                            // we check if the rover gets out of the grid so it will be marked as destroyed
-                            // and we stop the command
-                            if (x < 0 || x > maxX || y < 0 || y > maxY) {
-                                destroyed = true;
-                            } else {
-                                current = new Position(new Coordinates(x, y), current.orientation());
-                                explored.add(current.coordinates());
-                            }
-                        }
-                        case LEFT -> {
-                            // tournée à gauche
-                            Direction newOrientation = switch (current.orientation()) {
-                                case NORTH -> Direction.WEST;
-                                case SOUTH -> Direction.EAST;
-                                case EAST  -> Direction.NORTH;
-                                case WEST  -> Direction.SOUTH;
-                            };
-                            current = new Position(current.coordinates(), newOrientation);
-                        }
-                        case RIGHT -> {
-                            // tournée à droite
-                            Direction newOrientation = switch (current.orientation()) {
-                                case NORTH -> Direction.EAST;
-                                case SOUTH -> Direction.WEST;
-                                case EAST  -> Direction.SOUTH;
-                                case WEST  -> Direction.NORTH;
-                            };
-                            current = new Position(current.coordinates(), newOrientation);
-                        }
+            for (Command cmd : rover.commands()) {
+                if (gridConf.kind() == GridKind.RECTANGULAR) {
+                    current = executeRectangularMove(cmd, current, gridConf);
+                    if (current == null) { // null means destroyed
+                        destroyed = true;
+                        break;
                     }
-                    i++;
+                } else if (gridConf.kind() == GridKind.TOROIDAL) {
+                    current = executeToroidalMove(cmd, current, gridConf);
+                }
+                explored.add(current.coordinates());
             }
 
-            }
             finalStates.add(new MarsRoverState(destroyed, current));
         }
-            // Compute percentage explored based on the grid size
-            int totalCells = input.grid().width() * input.grid().height();
-            double percentageExplored = (explored.size() * 100.0) / totalCells;
+
+        int totalCells = input.grid().width() * input.grid().height();
+        double percentageExplored = (explored.size() * 100.0) / totalCells;
 
         return new MarsRoverOutput(percentageExplored, finalStates);
     }
+
+    private Position executeRectangularMove(Command cmd, Position current, GridConfiguration gridConf) {
+        int maxX = gridConf.width() - 1;
+        int maxY = gridConf.height() - 1;
+
+        return switch (cmd) {
+            case MOVE -> {
+                int x = current.coordinates().x();
+                int y = current.coordinates().y();
+                switch (current.orientation()) {
+                    case NORTH -> y++;
+                    case SOUTH -> y--;
+                    case EAST  -> x++;
+                    case WEST  -> x--;
+                }
+                if (x < 0 || x > maxX || y < 0 || y > maxY) {
+                    yield null; // mark as destroyed
+                }
+                yield new Position(new Coordinates(x, y), current.orientation());
+            }
+            case LEFT -> new Position(current.coordinates(), turnLeft(current.orientation()));
+            case RIGHT -> new Position(current.coordinates(), turnRight(current.orientation()));
+        };
+    }
+
+    private Position executeToroidalMove(Command cmd, Position current, GridConfiguration gridConf) {
+        return switch (cmd) {
+            case MOVE -> {
+                int x = current.coordinates().x();
+                int y = current.coordinates().y();
+                switch (current.orientation()) {
+                    case NORTH -> y = (y + 1 + gridConf.height()) % gridConf.height();
+                    case SOUTH -> y = (y - 1 + gridConf.height()) % gridConf.height();
+                    case EAST  -> x = (x + 1 + gridConf.width()) % gridConf.width();
+                    case WEST  -> x = (x - 1 + gridConf.width()) % gridConf.width();
+                }
+                yield new Position(new Coordinates(x, y), current.orientation());
+            }
+            case LEFT -> new Position(current.coordinates(), turnLeft(current.orientation()));
+            case RIGHT -> new Position(current.coordinates(), turnRight(current.orientation()));
+        };
+    }
+
+    private Direction turnLeft(Direction dir) {
+        return switch (dir) {
+            case NORTH -> Direction.WEST;
+            case SOUTH -> Direction.EAST;
+            case EAST  -> Direction.NORTH;
+            case WEST  -> Direction.SOUTH;
+        };
+    }
+
+    private Direction turnRight(Direction dir) {
+        return switch (dir) {
+            case NORTH -> Direction.EAST;
+            case SOUTH -> Direction.WEST;
+            case EAST  -> Direction.SOUTH;
+            case WEST  -> Direction.NORTH;
+        };
+    }
 }
+

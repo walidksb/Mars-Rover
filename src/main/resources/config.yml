@@ -19,6 +19,8 @@ rovers:
     - MOVE
     - LEFT
     - MOVE
+    - LEFT
+    - MOVE
   - position:
       coordinates:
         x: 3
