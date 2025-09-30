@@ -1,7 +1,7 @@
 grid:
   width: 5
   height: 5
-  kind: RECTANGULAR
+  kind: TOROIDAL
 rovers:
   - position:
       coordinates:
@@ -9,34 +9,31 @@ rovers:
         y: 2
       orientation: NORTH
     commands:
-    - LEFT
-    - MOVE
-    - LEFT
-    - MOVE
-    - LEFT
-    - MOVE
-    - LEFT
-    - MOVE
-    - LEFT
-    - MOVE
-    - LEFT
-    - MOVE
+        - LEFT
+        - MOVE
+        - LEFT
+        - MOVE
+        - LEFT
+        - MOVE
+        - LEFT
+        - MOVE
+        - MOVE
   - position:
       coordinates:
         x: 3
         y: 3
       orientation: EAST
     commands:
-        - MOVE
-        - MOVE
-        - RIGHT
-        - MOVE
-        - MOVE
-        - RIGHT
-        - MOVE
-        - RIGHT
-        - RIGHT
-        - MOVE
+      - MOVE
+      - MOVE
+      - RIGHT
+      - MOVE
+      - MOVE
+      - RIGHT
+      - MOVE
+      - RIGHT
+      - RIGHT
+      - MOVE
 ##Sortie
 #percentageExplored: 28%
 #finalRoverStates:

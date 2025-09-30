@@ -1,9 +1,5 @@
 package fr.univ_amu.m1info.mars_rover.simulator;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SequenceWriter;
@@ -11,46 +7,95 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import fr.univ_amu.m1info.mars_rover.input.MarsRoverInput;
 import fr.univ_amu.m1info.mars_rover.output.MarsRoverOutput;
+import fr.univ_amu.m1info.mars_rover.output.RoverGUI;
 
+import javax.swing.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashSet;
 
 public class App {
-        public static void main(String[] args) {
-            final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory()
-                    .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
-                    .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
-            try {
-                final InputStream inputStream
-                        = App.class.getResourceAsStream("/config.yml");
-                final MarsRoverInput marsRoverMarsRoverInput =
-                        objectMapper.readValue(inputStream, MarsRoverInput.class);
-                System.out.println("Configuration chargée !");
-                System.out.println(marsRoverMarsRoverInput);
 
-                MarsRoverSimulator simulator = new MarsRoverSimulator();
-                /*
-                //Simulation
-                Coordinates c1 = new Coordinates(1, 3);
-                Position p1 = new Position(c1, Direction.NORTH);
-                MarsRoverState state1 = new MarsRoverState(false, p1);
+    public static void main(String[] args) {
+        try {
+            MarsRoverInput input = loadConfig("/config.yml");
 
-                Coordinates c2 = new Coordinates(4, 3);
-                Position p2 = new Position(c2, Direction.EAST);
-                MarsRoverState state2 = new MarsRoverState(false, p2);
+            // Création de l'interface graphique
+            int gridW = input.grid().width();
+            int gridH = input.grid().height();
 
-                final MarsRoverOutput marsRoverOutput = new MarsRoverOutput(28.0, List.of(state1, state2));
-                */
-                MarsRoverOutput marsRoverOutput = simulator.simulate(marsRoverMarsRoverInput);
-                // Écriture du fichier output.yml
-                ObjectWriter writer = objectMapper.writer();
-                try (FileOutputStream fos = new FileOutputStream("FinalOutput.yml");
-                     SequenceWriter sw = writer.writeValues(fos)) {
-                     sw.write(marsRoverOutput);
+            JFrame frame = new JFrame("Mars Rover Simulation");
+            RoverGUI panel = new RoverGUI(gridW, gridH);
+            frame.add(panel);
+            frame.pack();
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+
+            // Création du simulateur
+            MarsRoverSimulator simulator = new MarsRoverSimulator();
+
+            // Définition de l'observateur pour mettre à jour l'Interface Graphique
+            MarsRoverSimulator.SimulationObserver observer = (positions, explored) -> {
+                // Utiliser invokeLater pour garantir que les mises à jour de l'Interface Graphique se font sur le bon thread
+                SwingUtilities.invokeLater(() -> panel.updateSimulationState(positions, explored));
+                try {
+                    Thread.sleep(600);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
+            };
 
-                //System.out.println("Fichier 'output.yml' genere avec succes !");
-                System.out.println("Simulation terminer !");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            // Lancement de la simulation en arrière-plan pour ne pas bloquer l'interface
+            new Thread(() -> {
+                try {
+                    MarsRoverOutput output = simulator.simulate(input, observer);
+                    writeOutput(output, "FinalOutput.yml");
+
+                    // Affiche l'état final sur l'interface graphique
+                    SwingUtilities.invokeLater(() -> panel.setFinalState(
+                            output.finalRoverStates(),
+                            new HashSet<>()
+                    ));
+
+                    System.out.println("Simulation terminée !");
+                    System.out.printf("Pourcentage exploré : %.2f%%\n", output.percentageExplored());
+                    System.out.println("Résultats finaux enregistrés dans FinalOutput.yml");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    private static MarsRoverInput loadConfig(String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory()
+                .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+        try (InputStream inputStream = App.class.getResourceAsStream(path)) {
+            if (inputStream == null) {
+                throw new IOException("Cannot find resource: " + path);
+            }
+            MarsRoverInput input = objectMapper.readValue(inputStream, MarsRoverInput.class);
+            System.out.println("Configuration chargée !");
+            return input;
+        }
+    }
+
+    private static void writeOutput(MarsRoverOutput output, String path) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory()
+                .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+        ObjectWriter writer = objectMapper.writer();
+        try (FileOutputStream fos = new FileOutputStream(path);
+             SequenceWriter sw = writer.writeValues(fos)) {
+            sw.write(output);
+        }
+    }
 }
