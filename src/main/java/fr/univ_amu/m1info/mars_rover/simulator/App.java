@@ -59,9 +59,9 @@ public class App {
                             new HashSet<>()
                     ));
 
-                    System.out.println("Simulation terminée !");
-                    System.out.printf("Pourcentage exploré : %.2f%%\n", output.percentageExplored());
-                    System.out.println("Résultats finaux enregistrés dans FinalOutput.yml");
+                    System.out.println("Simulation terminer !");
+                    System.out.printf("Pourcentage explore : %.2f%%\n", output.percentageExplored());
+                    System.out.println("Resultats finaux enregistres dans FinalOutput.yml");
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -83,7 +83,7 @@ public class App {
                 throw new IOException("Cannot find resource: " + path);
             }
             MarsRoverInput input = objectMapper.readValue(inputStream, MarsRoverInput.class);
-            System.out.println("Configuration chargée !");
+            System.out.println("Configuration chargee !");
             return input;
         }
     }

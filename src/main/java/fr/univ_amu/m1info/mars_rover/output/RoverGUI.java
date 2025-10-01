@@ -17,10 +17,10 @@ public class RoverGUI extends JPanel {
     private final int gridHeight;
     private int cellSize = 20;
 
-    // Utilisation de collections thread-safe pour les mises à jour depuis un autre thread
+    // Collections thread-safe pour mises à jour depuis un autre thread
     private final List<Position> currentRoverPositions = new CopyOnWriteArrayList<>();
     private final Set<Coordinates> exploredCells = new CopyOnWriteArraySet<>();
-    private List<MarsRoverState> finalRoverStates = new CopyOnWriteArrayList<>();
+    private final List<MarsRoverState> finalRoverStates = new CopyOnWriteArrayList<>();
 
     public RoverGUI(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
@@ -31,7 +31,7 @@ public class RoverGUI extends JPanel {
         setBackground(new Color(210, 180, 140));
     }
 
-    // Met à jour l'état de la simulation pour l'affichage.
+    // Met à jour l’état courant pendant la simulation
     public void updateSimulationState(List<Position> positions, Set<Coordinates> explored) {
         this.currentRoverPositions.clear();
         this.currentRoverPositions.addAll(positions);
@@ -41,8 +41,7 @@ public class RoverGUI extends JPanel {
         repaint();
     }
 
-
-    // Affiche l'état final, notamment les rovers détruits.
+    // Affiche l’état final (rovers détruits, positions finales, etc.)
     public void setFinalState(List<MarsRoverState> finalStates, Set<Coordinates> explored) {
         this.currentRoverPositions.clear();
         this.finalRoverStates.clear();
@@ -52,13 +51,12 @@ public class RoverGUI extends JPanel {
         repaint();
     }
 
-
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
 
-        // Calcul dynamique de la taille des cellules pour s'adapter à la fenêtre
+        // Calcul dynamique de la taille des cellules
         int width = getWidth();
         int height = getHeight();
         this.cellSize = Math.min((width - 40) / gridWidth, (height - 40) / gridHeight);
@@ -82,21 +80,22 @@ public class RoverGUI extends JPanel {
             g2d.drawLine(offsetX, offsetY + i * cellSize, offsetX + gridWidth * cellSize, offsetY + i * cellSize);
         }
 
-        // Dessiner les rovers en cours d'animation
+        // Dessiner les rovers en cours de déplacement
         for (Position pos : currentRoverPositions) {
             drawRover(g2d, pos, Color.BLUE);
         }
 
-        // Dessiner les rovers à leur état final
+        // Dessiner les rovers à l’état final
         for (MarsRoverState state : finalRoverStates) {
             if (state.isDestroyed()) {
-                drawDestroyedRover(g2d, state.getPosition());
+                drawDestroyedRover(g2d, state.position());
             } else {
-                drawRover(g2d, state.getPosition(), new Color(0, 100, 0));
+                drawRover(g2d, state.position(), new Color(0, 100, 0));
             }
         }
     }
 
+    // Dessine un rover actif
     private void drawRover(Graphics2D g2d, Position pos, Color color) {
         if (pos == null) return;
 
@@ -107,7 +106,7 @@ public class RoverGUI extends JPanel {
         g2d.setColor(color);
         g2d.fillOval(centerX - size / 2, centerY - size / 2, size, size);
 
-        // Dessiner un indicateur de direction
+        // Indicateur de direction
         g2d.setColor(Color.WHITE);
         int endX = centerX;
         int endY = centerY;
@@ -121,6 +120,7 @@ public class RoverGUI extends JPanel {
         g2d.drawLine(centerX, centerY, endX, endY);
     }
 
+    // Dessine un rover détruit (croix rouge)
     private void drawDestroyedRover(Graphics2D g2d, Position pos) {
         if (pos == null) return;
 

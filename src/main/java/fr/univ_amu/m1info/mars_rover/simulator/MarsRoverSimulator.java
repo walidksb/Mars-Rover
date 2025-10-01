@@ -5,7 +5,6 @@ import fr.univ_amu.m1info.mars_rover.output.MarsRoverOutput;
 import fr.univ_amu.m1info.mars_rover.output.MarsRoverState;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 
 public class MarsRoverSimulator {
 
