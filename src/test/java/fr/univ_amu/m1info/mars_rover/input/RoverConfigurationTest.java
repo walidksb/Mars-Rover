@@ -2,62 +2,73 @@ package fr.univ_amu.m1info.mars_rover.input;
 
 import org.junit.jupiter.api.Test;
 import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 class RoverConfigurationTest {
 
     @Test
     void testRoverConfiguration_shouldStorePositionAndCommands() {
-        // Arrange
+        // GIVEN
         Coordinates start = new Coordinates(1, 2);
         Position position = new Position(start, Direction.NORTH);
         List<Command> commands = List.of(Command.LEFT, Command.MOVE, Command.RIGHT);
 
-        // Act
+        // WHEN
         RoverConfiguration rover = new RoverConfiguration(position, commands);
 
-        // Assert
-        assertEquals(position, rover.position());
-        assertEquals(3, rover.commands().size());
-        assertEquals(Command.LEFT, rover.commands().get(0));
-        assertEquals(Command.MOVE, rover.commands().get(1));
-        assertEquals(Command.RIGHT, rover.commands().get(2));
+        // THEN
+        assertThat(rover.position())
+                .as("La position du rover doit être stockée correctement")
+                .isEqualTo(position);
+
+        assertThat(rover.commands())
+                .as("La liste des commandes doit contenir exactement trois éléments")
+                .hasSize(3)
+                .containsExactly(Command.LEFT, Command.MOVE, Command.RIGHT);
     }
 
     @Test
     void testRoverConfiguration_whenEmptyCommandList_shouldBeValid() {
-        // Arrange
+        // GIVEN
         Position position = new Position(new Coordinates(0, 0), Direction.EAST);
         List<Command> commands = List.of(); // aucune commande
 
-        // Act
+        // WHEN
         RoverConfiguration rover = new RoverConfiguration(position, commands);
 
-        // Assert
-        assertNotNull(rover);
-        assertEquals(position, rover.position());
-        assertTrue(rover.commands().isEmpty(), "La liste de commandes doit etre vide");
+        // THEN
+        assertThat(rover)
+                .as("L'objet RoverConfiguration doit être correctement créé")
+                .isNotNull();
+
+        assertThat(rover.position())
+                .as("La position doit correspondre à celle passée en paramètre")
+                .isEqualTo(position);
+
+        assertThat(rover.commands())
+                .as("La liste de commandes doit être vide lorsqu’aucune commande n’est passée")
+                .isEmpty();
     }
 
     @Test
     void testRoverConfiguration_whenNullPosition_shouldThrowException() {
-        // Arrange
+        // GIVEN
         List<Command> commands = List.of(Command.MOVE);
 
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new RoverConfiguration(null, commands);
-        }, "Une position null ne doit pas etre autorisée");
+        // WHEN + THEN
+        assertThatThrownBy(() -> new RoverConfiguration(null, commands))
+                .as("Une position null ne doit pas être autorisée")
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void testRoverConfiguration_whenNullCommandList_shouldThrowException() {
-        // Arrange
+        // GIVEN
         Position position = new Position(new Coordinates(2, 3), Direction.SOUTH);
 
-        // Act & Assert
-        assertThrows(NullPointerException.class, () -> {
-            new RoverConfiguration(position, null);
-        }, "La liste de commandes ne doit pas etre null");
+        // WHEN + THEN
+        assertThatThrownBy(() -> new RoverConfiguration(position, null))
+                .as("La liste de commandes ne doit pas être null")
+                .isInstanceOf(NullPointerException.class);
     }
 }

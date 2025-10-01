@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 class MarsRoverOutputTest {
 
     @Test
     void testConstructorAndGetters_shouldReturnExpectedValues() {
-        // Arrange : création d’un état final simulé
+        // GIVEN – création d’états simulés
         Coordinates c1 = new Coordinates(1, 3);
         Position p1 = new Position(c1, Direction.NORTH);
         MarsRoverState s1 = new MarsRoverState(false, p1);
@@ -25,50 +25,67 @@ class MarsRoverOutputTest {
         double percentage = 28.0;
         List<MarsRoverState> states = List.of(s1, s2);
 
-        // Act : création de l’objet MarsRoverOutput
+        // WHEN
         MarsRoverOutput output = new MarsRoverOutput(percentage, states);
 
-        // Assert : vérifier que les valeurs sont bien enregistrées
-        assertEquals(28.0, output.percentageExplored());
-        assertEquals(2, output.finalRoverStates().size());
-        assertEquals(Direction.NORTH, output.finalRoverStates().get(0).position().orientation());
-        assertEquals(Direction.EAST, output.finalRoverStates().get(1).position().orientation());
+        // THEN
+        assertThat(output.percentageExplored())
+                .as("Le pourcentage exploré doit correspondre à la valeur fournie")
+                .isEqualTo(28.0);
+
+        assertThat(output.finalRoverStates())
+                .as("La liste des états finaux doit contenir les deux rovers simulés")
+                .hasSize(2);
+
+        assertThat(output.finalRoverStates().get(0).position().orientation())
+                .as("Le premier rover doit être orienté vers le Nord")
+                .isEqualTo(Direction.NORTH);
+
+        assertThat(output.finalRoverStates().get(1).position().orientation())
+                .as("Le second rover doit être orienté vers l'Est")
+                .isEqualTo(Direction.EAST);
     }
 
     @Test
     void testOutputShouldHandleEmptyList() {
-        // Arrange : aucun rover
+        // GIVEN
         MarsRoverOutput output = new MarsRoverOutput(0.0, List.of());
 
-        // Assert : vérifier les valeurs par défaut
-        assertEquals(0.0, output.percentageExplored());
-        assertTrue(output.finalRoverStates().isEmpty());
+        // THEN
+        assertThat(output.percentageExplored())
+                .as("Le pourcentage exploré doit être 0.0 pour un scénario vide")
+                .isZero();
+
+        assertThat(output.finalRoverStates())
+                .as("La liste d'états doit être vide s'il n'y a aucun rover")
+                .isEmpty();
     }
 
     @Test
     void testOutputPercentageCannotBeNegative() {
-        // Arrange : tentative de création d’un pourcentage négatif
+        // GIVEN
         MarsRoverOutput output = new MarsRoverOutput(-10.0, List.of());
 
-        // Assert : même si techniquement possible, la valeur ne devrait pas être utilisée
-        assertTrue(output.percentageExplored() < 0,
-                "Le pourcentage négatif devrait être évité dans la logique métier");
+        // THEN
+        assertThat(output.percentageExplored())
+                .as("Le pourcentage ne devrait jamais être négatif dans une utilisation normale")
+                .isNegative();
     }
 
     @Test
     void testToStringShouldContainPercentageAndStates() {
-        // Arrange
+        // GIVEN
         Coordinates c = new Coordinates(2, 2);
         Position p = new Position(c, Direction.SOUTH);
         MarsRoverState s = new MarsRoverState(false, p);
         MarsRoverOutput output = new MarsRoverOutput(50.0, List.of(s));
 
-        // Act
+        // WHEN
         String text = output.toString();
 
-        // Assert : vérifier que la chaîne contient bien les informations principales
-        assertTrue(text.contains("percentageExplored"));
-        assertTrue(text.contains("50.0"));
-        assertTrue(text.contains("SOUTH"));
+        // THEN
+        assertThat(text)
+                .as("Le toString() doit contenir le pourcentage exploré et l'orientation")
+                .contains("percentageExplored", "50.0", "SOUTH");
     }
 }

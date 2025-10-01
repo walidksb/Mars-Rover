@@ -2,47 +2,72 @@ package fr.univ_amu.m1info.mars_rover.input;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 class DirectionTest {
 
     @Test
     void testValues_shouldContainFourCardinalDirections() {
+        // WHEN
         Direction[] vals = Direction.values();
-        assertEquals(4, vals.length);
-        // ordre non garanti contractuellement, on vérifie la présence
-        assertTrue(contains(vals, Direction.NORTH));
-        assertTrue(contains(vals, Direction.SOUTH));
-        assertTrue(contains(vals, Direction.EAST));
-        assertTrue(contains(vals, Direction.WEST));
+
+        // THEN
+        assertThat(vals)
+                .as("L'énumération doit contenir les quatre directions cardinales")
+                .hasSize(4)
+                .contains(Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
     }
 
     @Test
     void testValueOf_shouldReturnCorrectEnum() {
-        assertEquals(Direction.NORTH, Direction.valueOf("NORTH"));
-        assertEquals(Direction.SOUTH, Direction.valueOf("SOUTH"));
-        assertEquals(Direction.EAST, Direction.valueOf("EAST"));
-        assertEquals(Direction.WEST, Direction.valueOf("WEST"));
+        // THEN
+        assertThat(Direction.valueOf("NORTH")).isEqualTo(Direction.NORTH);
+        assertThat(Direction.valueOf("SOUTH")).isEqualTo(Direction.SOUTH);
+        assertThat(Direction.valueOf("EAST")).isEqualTo(Direction.EAST);
+        assertThat(Direction.valueOf("WEST")).isEqualTo(Direction.WEST);
     }
 
-    // --- Tests bonus : table de rotation attendue (utile pour documenter le comportement)
     @Test
     void testLeftRotation_expectedMapping() {
-        assertEquals(Direction.WEST,  rotateLeft(Direction.NORTH));
-        assertEquals(Direction.SOUTH, rotateLeft(Direction.WEST));
-        assertEquals(Direction.EAST,  rotateLeft(Direction.SOUTH));
-        assertEquals(Direction.NORTH, rotateLeft(Direction.EAST));
+        // GIVEN + WHEN + THEN
+        assertThat(rotateLeft(Direction.NORTH))
+                .as("Rotation à gauche depuis NORTH doit donner WEST")
+                .isEqualTo(Direction.WEST);
+
+        assertThat(rotateLeft(Direction.WEST))
+                .as("Rotation à gauche depuis WEST doit donner SOUTH")
+                .isEqualTo(Direction.SOUTH);
+
+        assertThat(rotateLeft(Direction.SOUTH))
+                .as("Rotation à gauche depuis SOUTH doit donner EAST")
+                .isEqualTo(Direction.EAST);
+
+        assertThat(rotateLeft(Direction.EAST))
+                .as("Rotation à gauche depuis EAST doit donner NORTH")
+                .isEqualTo(Direction.NORTH);
     }
 
     @Test
     void testRightRotation_expectedMapping() {
-        assertEquals(Direction.EAST,  rotateRight(Direction.NORTH));
-        assertEquals(Direction.NORTH, rotateRight(Direction.WEST));
-        assertEquals(Direction.WEST,  rotateRight(Direction.SOUTH));
-        assertEquals(Direction.SOUTH, rotateRight(Direction.EAST));
+        // GIVEN + WHEN + THEN
+        assertThat(rotateRight(Direction.NORTH))
+                .as("Rotation à droite depuis NORTH doit donner EAST")
+                .isEqualTo(Direction.EAST);
+
+        assertThat(rotateRight(Direction.EAST))
+                .as("Rotation à droite depuis EAST doit donner SOUTH")
+                .isEqualTo(Direction.SOUTH);
+
+        assertThat(rotateRight(Direction.SOUTH))
+                .as("Rotation à droite depuis SOUTH doit donner WEST")
+                .isEqualTo(Direction.WEST);
+
+        assertThat(rotateRight(Direction.WEST))
+                .as("Rotation à droite depuis WEST doit donner NORTH")
+                .isEqualTo(Direction.NORTH);
     }
 
-    // Helpers pour les tests (si tu n'as pas de méthodes left()/right() dans l'enum)
+    // Helpers pour simuler les rotations (si non implémentées dans l'enum)
     private static Direction rotateLeft(Direction d) {
         return switch (d) {
             case NORTH -> Direction.WEST;
@@ -59,10 +84,5 @@ class DirectionTest {
             case SOUTH -> Direction.WEST;
             case WEST  -> Direction.NORTH;
         };
-    }
-
-    private static boolean contains(Direction[] arr, Direction target) {
-        for (Direction d : arr) if (d == target) return true;
-        return false;
     }
 }
