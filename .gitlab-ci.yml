@@ -1,0 +1,35 @@
+image: gradle:9.0.2-jdk24
+
+stages:
+  - build
+  - test
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+before_script:
+  # Nettoie le cache Gradle pour éviter les erreurs
+  - gradle clean
+
+build:
+  stage: build
+  script:
+    - echo "Compilation du projet Mars Rover"
+    - gradle build -x test
+  artifacts:
+    paths:
+      - build/libs/
+    expire_in: 1 week
+
+test:
+  stage: test
+  script:
+    - echo "Exécution des tests unitaires"
+    - gradle test
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/TEST-*.xml
+    paths:
+      - build/reports/tests/test/
+    expire_in: 1 week
