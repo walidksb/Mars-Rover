@@ -1,4 +1,4 @@
-[![CI Pipeline](https://gitlab.etulab.univ-amu.fr/n24024683/mars-rover-nahili-abdelhakim-kesbi-walid/badges/master/pipeline.svg)](https://gitlab.etulab.univ-amu.fr/<ton-chemin-de-projet>/-/pipelines)
+[![CI Pipeline](https://etulab.univ-amu.fr/n24024683/mars-rover-nahili-abdelhakim-kesbi-walid/badges/master/pipeline.svg)](https://etulab.univ-amu.fr/n24024683/mars-rover-nahili-abdelhakim-kesbi-walid/-/pipelines)
 
 # 🚀 Mars Rover 
 
