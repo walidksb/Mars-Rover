@@ -1,4 +1,4 @@
-image: gradle:8.5-jdk17
+image: gradle:jdk24-alpine
 
 stages:
   - build
@@ -8,17 +8,15 @@ variables:
   GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 before_script:
-  # Nettoie le cache Gradle pour éviter les erreurs
-  - gradle clean
+  - export GRADLE_USER_HOME=`pwd`/.gradle
 
 build:
   stage: build
   script:
-    - echo "Compilation du projet Mars Rover"
-    - gradle build -x test
+    gradle --build-cache build
   artifacts:
     paths:
-      - build/libs/
+    - build/libs/*.jar
     expire_in: 1 week
 
 test:
@@ -29,7 +27,5 @@ test:
   artifacts:
     when: always
     reports:
-      junit: build/test-results/test/TEST-*.xml
-    paths:
-      - build/reports/tests/test/
-    expire_in: 1 week
+      junit: build/test-results/test/**/TEST-*.xml
+
