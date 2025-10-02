@@ -18,7 +18,7 @@ class MarsRoverSimulatorTest {
         // GIVEN
         GridConfiguration grid = new GridConfiguration(5, 5, GridKind.RECTANGULAR);
         Position position = new Position(new Coordinates(2, 2), Direction.NORTH);
-        RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.MOVE));
+        RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.MOVE), 0);
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
         MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
@@ -43,7 +43,7 @@ class MarsRoverSimulatorTest {
         // GIVEN
         GridConfiguration grid = new GridConfiguration(5, 5, GridKind.RECTANGULAR);
         Position position = new Position(new Coordinates(1, 1), Direction.NORTH);
-        RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.LEFT, Command.RIGHT));
+        RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.LEFT, Command.RIGHT), 0);
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
         MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
@@ -64,7 +64,7 @@ class MarsRoverSimulatorTest {
         // GIVEN
         GridConfiguration grid = new GridConfiguration(5, 5, GridKind.RECTANGULAR);
         Position position = new Position(new Coordinates(0, 0), Direction.SOUTH);
-        RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.MOVE));
+        RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.MOVE), 0);
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
         MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
@@ -108,7 +108,7 @@ class MarsRoverSimulatorTest {
         GridConfiguration grid = new GridConfiguration(5, 5, GridKind.RECTANGULAR);
         Position position = new Position(new Coordinates(1, 1), Direction.NORTH);
         List<Command> commands = List.of(); // Liste vide (aucune commande)
-        RoverConfiguration rover = new RoverConfiguration(position, commands);
+        RoverConfiguration rover = new RoverConfiguration(position, commands, 0);
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
         MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
@@ -133,10 +133,10 @@ class MarsRoverSimulatorTest {
         GridConfiguration grid = new GridConfiguration(5, 5, GridKind.RECTANGULAR);
 
         Position p1 = new Position(new Coordinates(1, 2), Direction.NORTH);
-        RoverConfiguration r1 = new RoverConfiguration(p1, List.of(Command.MOVE));
+        RoverConfiguration r1 = new RoverConfiguration(p1, List.of(Command.MOVE), 0);
 
         Position p2 = new Position(new Coordinates(3, 3), Direction.EAST);
-        RoverConfiguration r2 = new RoverConfiguration(p2, List.of(Command.MOVE));
+        RoverConfiguration r2 = new RoverConfiguration(p2, List.of(Command.MOVE), 0);
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
         MarsRoverInput input = new MarsRoverInput(grid, List.of(r1, r2), Collections.emptySet());
