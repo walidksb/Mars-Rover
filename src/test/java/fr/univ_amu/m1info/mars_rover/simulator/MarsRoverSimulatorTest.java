@@ -5,6 +5,7 @@ import fr.univ_amu.m1info.mars_rover.output.MarsRoverOutput;
 import fr.univ_amu.m1info.mars_rover.output.MarsRoverState;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -20,7 +21,7 @@ class MarsRoverSimulatorTest {
         RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.MOVE));
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
-        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover));
+        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
 
         // WHEN
         MarsRoverOutput output = simulator.simulate(input);
@@ -45,7 +46,7 @@ class MarsRoverSimulatorTest {
         RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.LEFT, Command.RIGHT));
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
-        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover));
+        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
 
         // WHEN
         MarsRoverOutput output = simulator.simulate(input);
@@ -66,7 +67,7 @@ class MarsRoverSimulatorTest {
         RoverConfiguration rover = new RoverConfiguration(position, List.of(Command.MOVE));
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
-        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover));
+        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
 
         // WHEN
         MarsRoverOutput output = simulator.simulate(input);
@@ -83,7 +84,7 @@ class MarsRoverSimulatorTest {
     void testSimulate_whenNoRovers_shouldReturnEmptyOutput() {
         // GIVEN
         GridConfiguration grid = new GridConfiguration(5, 5, GridKind.RECTANGULAR);
-        MarsRoverInput input = new MarsRoverInput(grid, List.of());
+        MarsRoverInput input = new MarsRoverInput(grid, List.of(), Collections.emptySet());
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
 
@@ -110,7 +111,7 @@ class MarsRoverSimulatorTest {
         RoverConfiguration rover = new RoverConfiguration(position, commands);
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
-        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover));
+        MarsRoverInput input = new MarsRoverInput(grid, List.of(rover), Collections.emptySet());
 
         // WHEN
         MarsRoverOutput output = simulator.simulate(input);
@@ -138,7 +139,7 @@ class MarsRoverSimulatorTest {
         RoverConfiguration r2 = new RoverConfiguration(p2, List.of(Command.MOVE));
 
         MarsRoverSimulator simulator = new MarsRoverSimulator();
-        MarsRoverInput input = new MarsRoverInput(grid, List.of(r1, r2));
+        MarsRoverInput input = new MarsRoverInput(grid, List.of(r1, r2), Collections.emptySet());
 
         // WHEN
         MarsRoverOutput output = simulator.simulate(input);
