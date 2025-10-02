@@ -25,6 +25,61 @@ Le programme :
     - et le **pourcentage de la surface explorée**.
 
 ---
+## 📖 Fonctionnalités
+
+- Supporte **plusieurs rovers** en parallèle.  
+- Deux types de grilles :
+  - **Rectangulaire** : grille finie avec des bords.  
+  - **Toroïdale** : grille qui se referme sur elle-même (comme un donut).  
+- **Obstacles** : un rover est détruit s’il tombe sur un obstacle.  
+- **Rayon d’exploration** :
+  - `0` : par défaut, le rover explore uniquement les cases visitées.  
+  - `1` : explore toutes les cases voisines autour de sa trajectoire.  
+  - `2+` : explore toutes les cases dans une distance de Manhattan donnée.  
+- **Observateur de simulation** : permet de suivre les positions des rovers et les cases explorées à chaque étape pour la creation de l'interface graphique.  
+- Génère un résultat final contenant :
+  - Pourcentage de la grille explorée.  
+  - État final de chaque rover (détruit ou survivant, position finale).  
+  - L’ensemble des coordonnées explorées. 
+
+---
+
+## 🛠️ Structure du projet
+fr.univ_amu.m1info.mars_rover
+├── input
+│ ├── MarsRoverInput.java
+│ ├── RoverConfiguration.java
+│ ├── GridConfiguration.java
+│ ├── Command.java
+│ ├── Coordinates.java
+│ ├── Direction.java
+│ ├── GridKind.java
+│ └── Position.java
+├── output
+│ ├── MarsRoverOutput.java
+│ ├── MarsRoverState.java
+│ ├── Coordinates.java
+│ ├── Position.java
+│ └── RoverGUI.java
+└── simulator
+  ├── App.java
+  └── MarsRoverSimulator.java
+
+---
+### Prérequis
+- **Java 17** ou supérieur
+- **Gradle** (pour construire et exécuter le projet)
+- Fichier de configuration YAML `config.yml` dans le répertoire racine
+
+### Commandes Gradle
+1. **Compiler le projet** :
+```bash
+gradle build
+
+gradle run
+```
+Le programme lit automatiquement config.yml et produit output.yml.
+
 ## 📚 Description des emprunts
 
 Au cours du développement de ce projet, plusieurs ressources externes ont été **consultées et adaptées** afin de mieux comprendre certains concepts liés à la programmation Java, à la gestion des fichiers YAML, à la conception modulaire et aux tests unitaires.  
@@ -87,3 +142,4 @@ public record RoverConfiguration(Position position, List<Command> commands) {
         Objects.requireNonNull(commands);
     }
 }
+
