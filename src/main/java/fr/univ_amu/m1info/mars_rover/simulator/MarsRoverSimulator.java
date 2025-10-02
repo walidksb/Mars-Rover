@@ -39,6 +39,13 @@ public class MarsRoverSimulator {
             Position current = rover.position();
             boolean destroyed = false;
 
+            // Verifier si la psoition initial est un obstacle si oui le rover sera detruit directement
+            if (input.obstacles() != null && input.obstacles().contains(current.coordinates())) {
+                destroyed = true;
+                finalStates.add(new MarsRoverState(true, current));
+                continue;
+            }
+
             explored.add(current.coordinates());
             GridConfiguration gridConf = input.grid();
 
@@ -51,6 +58,12 @@ public class MarsRoverSimulator {
                     }
                 } else if (gridConf.kind() == GridKind.TOROIDAL) {
                     current = executeToroidalMove(cmd, current, gridConf);
+                }
+
+                // Vérifie si la nouvelle position est un obstacle
+                if (input.obstacles() != null && input.obstacles().contains(current.coordinates())) {
+                    destroyed = true;
+                    break;
                 }
 
                 explored.add(current.coordinates());
@@ -79,7 +92,7 @@ public class MarsRoverSimulator {
         // Final notification to show final state
         observer.onStep(initialPositions, explored);
 
-        return new MarsRoverOutput(percentageExplored, finalStates);
+        return new MarsRoverOutput(percentageExplored, finalStates, explored);
     }
 
     // la methode pour executer le Grid Rectangular avec la commande Move

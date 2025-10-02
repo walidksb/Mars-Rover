@@ -27,6 +27,7 @@ public class App {
 
             JFrame frame = new JFrame("Mars Rover Simulation");
             RoverGUI panel = new RoverGUI(gridW, gridH);
+            panel.setObstacles(new HashSet<>(input.obstacles()));
             frame.add(panel);
             frame.pack();
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,7 +57,7 @@ public class App {
                     // Affiche l'état final sur l'interface graphique
                     SwingUtilities.invokeLater(() -> panel.setFinalState(
                             output.finalRoverStates(),
-                            new HashSet<>()
+                            output.exploredCells()
                     ));
                     System.out.println("Hoho !");
                     System.out.println("Simulation terminer !");
