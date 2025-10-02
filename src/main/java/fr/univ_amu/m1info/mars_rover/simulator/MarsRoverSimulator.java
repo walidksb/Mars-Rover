@@ -17,6 +17,32 @@ public class MarsRoverSimulator {
     // An observer that does nothing, to avoid null checks
     private static final SimulationObserver NO_OP_OBSERVER = (positions, explored) -> {};
 
+    private Set<Coordinates> getExploredCells(Coordinates current, int radius, GridConfiguration gridConf) {
+        Set<Coordinates> explored = new HashSet<>();
+        int width = gridConf.width();
+        int height = gridConf.height();
+
+        for (int dx = -radius; dx <= radius; dx++) {
+            for (int dy = -radius; dy <= radius; dy++) {
+                // ici distance Manhattan (cases dans un losange)
+                if (Math.abs(dx) + Math.abs(dy) <= radius) {
+                    int newX = current.x() + dx;
+                    int newY = current.y() + dy;
+
+                    if (gridConf.kind() == GridKind.TOROIDAL) {
+                        newX = (newX + width) % width;
+                        newY = (newY + height) % height;
+                    }
+
+                    if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
+                        explored.add(new Coordinates(newX, newY));
+                    }
+                }
+            }
+        }
+        return explored;
+    }
+
     public MarsRoverOutput simulate(MarsRoverInput input) {
         return simulate(input, NO_OP_OBSERVER);
     }
@@ -38,21 +64,23 @@ public class MarsRoverSimulator {
         for (RoverConfiguration rover : input.rovers()) {
             Position current = rover.position();
             boolean destroyed = false;
+            int radius = rover.explorationRadius(); // <--- rayon d’exploration du rover
 
-            // Verifier si la psoition initial est un obstacle si oui le rover sera detruit directement
+            // Vérifie si la position initiale est un obstacle
             if (input.obstacles() != null && input.obstacles().contains(current.coordinates())) {
                 destroyed = true;
                 finalStates.add(new MarsRoverState(true, current));
                 continue;
             }
 
-            explored.add(current.coordinates());
+            // Ajoute la cellule actuelle + rayon d’exploration
             GridConfiguration gridConf = input.grid();
+            explored.addAll(getExploredCells(current.coordinates(), radius, gridConf));
 
             for (Command cmd : rover.commands()) {
                 if (gridConf.kind() == GridKind.RECTANGULAR) {
                     current = executeRectangularMove(cmd, current, gridConf);
-                    if (current == null) { // null means destroyed
+                    if (current == null) { // null = destroyed
                         destroyed = true;
                         break;
                     }
@@ -66,22 +94,21 @@ public class MarsRoverSimulator {
                     break;
                 }
 
-                explored.add(current.coordinates());
+                // Ajoute la nouvelle position + rayon d’exploration
+                explored.addAll(getExploredCells(current.coordinates(), radius, gridConf));
 
-                // Notifie l'observateur après chaque mouvement
-                // On met à jour la position du rover actuel dans la liste des positions
+                // Notifie l’observateur
                 List<Position> currentPositions = new ArrayList<>(initialPositions);
                 int roverIndex = input.rovers().indexOf(rover);
-                if(roverIndex != -1) {
+                if (roverIndex != -1) {
                     currentPositions.set(roverIndex, current);
                     observer.onStep(currentPositions, new HashSet<>(explored));
                 }
             }
             finalStates.add(new MarsRoverState(destroyed, current));
 
-            // Mise à jour de la position initiale pour le prochain rover
             int roverIndex = input.rovers().indexOf(rover);
-            if(roverIndex != -1) {
+            if (roverIndex != -1) {
                 initialPositions.set(roverIndex, current);
             }
         }

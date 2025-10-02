@@ -14,7 +14,7 @@ class RoverConfigurationTest {
         List<Command> commands = List.of(Command.LEFT, Command.MOVE, Command.RIGHT);
 
         // WHEN
-        RoverConfiguration rover = new RoverConfiguration(position, commands);
+        RoverConfiguration rover = new RoverConfiguration(position, commands, 0);
 
         // THEN
         assertThat(rover.position())
@@ -34,7 +34,7 @@ class RoverConfigurationTest {
         List<Command> commands = List.of(); // aucune commande
 
         // WHEN
-        RoverConfiguration rover = new RoverConfiguration(position, commands);
+        RoverConfiguration rover = new RoverConfiguration(position, commands, 0);
 
         // THEN
         assertThat(rover)
@@ -56,7 +56,7 @@ class RoverConfigurationTest {
         List<Command> commands = List.of(Command.MOVE);
 
         // WHEN + THEN
-        assertThatThrownBy(() -> new RoverConfiguration(null, commands))
+        assertThatThrownBy(() -> new RoverConfiguration(null, commands, 0))
                 .as("Une position null ne doit pas être autorisée")
                 .isInstanceOf(NullPointerException.class);
     }
@@ -67,7 +67,7 @@ class RoverConfigurationTest {
         Position position = new Position(new Coordinates(2, 3), Direction.SOUTH);
 
         // WHEN + THEN
-        assertThatThrownBy(() -> new RoverConfiguration(position, null))
+        assertThatThrownBy(() -> new RoverConfiguration(position, null, 0))
                 .as("La liste de commandes ne doit pas être null")
                 .isInstanceOf(NullPointerException.class);
     }
