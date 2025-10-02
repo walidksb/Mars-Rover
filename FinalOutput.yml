@@ -1,29 +1,41 @@
-percentageExplored: 28.0
+percentageExplored: 52.0
 finalRoverStates:
-- isDestroyed: true
-  position:
-    coordinates:
-      x: 1
-      "y": 1
-    orientation: EAST
 - isDestroyed: false
   position:
     coordinates:
-      x: 0
-      "y": 1
+      x: 1
+      "y": 3
+    orientation: NORTH
+- isDestroyed: true
+  position:
+    coordinates:
+      x: 3
+      "y": 3
     orientation: EAST
 exploredCells:
 - x: 3
   "y": 3
 - x: 1
+  "y": 1
+- x: 2
+  "y": 2
+- x: 0
+  "y": 0
+- x: 1
   "y": 2
 - x: 0
   "y": 1
+- x: 2
+  "y": 3
 - x: 0
   "y": 2
+- x: 1
+  "y": 3
 - x: 0
   "y": 3
-- x: 4
+- x: 1
+  "y": 4
+- x: 1
+  "y": 0
+- x: 2
   "y": 1
-- x: 4
-  "y": 3
