@@ -58,7 +58,7 @@ public class App {
                             output.finalRoverStates(),
                             new HashSet<>()
                     ));
-
+                    System.out.println("Hoho !");
                     System.out.println("Simulation terminer !");
                     System.out.printf("Pourcentage explore : %.2f%%\n", output.percentageExplored());
                     System.out.println("Resultats finaux enregistres dans FinalOutput.yml");

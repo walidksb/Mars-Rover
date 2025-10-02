@@ -10,7 +10,7 @@
 
 ## 📘 Description du projet
 
-Ce projet simule les déplacements de plusieurs **rovers** sur une grille représentant la surface de Mars.  
+Ce projet simule les déplacements de un ou plusieurs **rovers** sur une grille représentant la surface de Mars.  
 Chaque rover dispose :
 - d’une **position initiale** (`x`, `y`, orientation),
 - et d’une **liste de commandes** (`LEFT`, `RIGHT`, `MOVE`).
