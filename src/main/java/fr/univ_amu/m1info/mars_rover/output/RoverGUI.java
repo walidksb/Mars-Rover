@@ -21,6 +21,7 @@ public class RoverGUI extends JPanel {
     private final List<Position> currentRoverPositions = new CopyOnWriteArrayList<>();
     private final Set<Coordinates> exploredCells = new CopyOnWriteArraySet<>();
     private final List<MarsRoverState> finalRoverStates = new CopyOnWriteArrayList<>();
+    private final Set<Coordinates> obstacles =  new CopyOnWriteArraySet<>();
 
     public RoverGUI(int gridWidth, int gridHeight) {
         this.gridWidth = gridWidth;
@@ -51,6 +52,12 @@ public class RoverGUI extends JPanel {
         repaint();
     }
 
+    public void setObstacles(Set<Coordinates> obstacles) {
+        this.obstacles.clear();
+        this.obstacles.addAll(obstacles);
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -76,6 +83,15 @@ public class RoverGUI extends JPanel {
         for (int i = 0; i <= gridWidth; i++) {
             g2d.drawLine(offsetX + i * cellSize, offsetY, offsetX + i * cellSize, offsetY + gridHeight * cellSize);
         }
+
+        // Dessiner les obstacles
+        g2d.setColor(Color.darkGray);
+        for (Coordinates obs : obstacles) {
+            int x = offsetX + obs.x() * cellSize;
+            int y = offsetY + (gridHeight - 1 - obs.y()) * cellSize;
+            g2d.fillRect(x, y, cellSize, cellSize);
+        }
+
         for (int i = 0; i <= gridHeight; i++) {
             g2d.drawLine(offsetX, offsetY + i * cellSize, offsetX + gridWidth * cellSize, offsetY + i * cellSize);
         }

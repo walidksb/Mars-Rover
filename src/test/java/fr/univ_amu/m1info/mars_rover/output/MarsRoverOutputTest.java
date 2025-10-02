@@ -5,6 +5,7 @@ import fr.univ_amu.m1info.mars_rover.input.Direction;
 import fr.univ_amu.m1info.mars_rover.input.Position;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -26,7 +27,7 @@ class MarsRoverOutputTest {
         List<MarsRoverState> states = List.of(s1, s2);
 
         // WHEN
-        MarsRoverOutput output = new MarsRoverOutput(percentage, states);
+        MarsRoverOutput output = new MarsRoverOutput(percentage, states, Collections.emptySet());
 
         // THEN
         assertThat(output.percentageExplored())
@@ -49,7 +50,7 @@ class MarsRoverOutputTest {
     @Test
     void testOutputShouldHandleEmptyList() {
         // GIVEN
-        MarsRoverOutput output = new MarsRoverOutput(0.0, List.of());
+        MarsRoverOutput output = new MarsRoverOutput(0.0, List.of(), Collections.emptySet());
 
         // THEN
         assertThat(output.percentageExplored())
@@ -64,7 +65,7 @@ class MarsRoverOutputTest {
     @Test
     void testOutputPercentageCannotBeNegative() {
         // GIVEN
-        MarsRoverOutput output = new MarsRoverOutput(-10.0, List.of());
+        MarsRoverOutput output = new MarsRoverOutput(-10.0, List.of(), Collections.emptySet());
 
         // THEN
         assertThat(output.percentageExplored())
@@ -78,7 +79,7 @@ class MarsRoverOutputTest {
         Coordinates c = new Coordinates(2, 2);
         Position p = new Position(c, Direction.SOUTH);
         MarsRoverState s = new MarsRoverState(false, p);
-        MarsRoverOutput output = new MarsRoverOutput(50.0, List.of(s));
+        MarsRoverOutput output = new MarsRoverOutput(50.0, List.of(s), Collections.emptySet());
 
         // WHEN
         String text = output.toString();
