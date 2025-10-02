@@ -21,6 +21,7 @@ build:
 
 test:
   stage: test
+  coverage: '/ - Instruction Coverage: ([0-9.]+)%/'
   script:
     - echo "Exécution des tests unitaires"
     - gradle test

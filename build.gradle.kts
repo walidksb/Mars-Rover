@@ -1,6 +1,8 @@
 plugins {
     id("java")
     id("application")
+    id("jacoco")
+    id("org.barfuin.gradle.jacocolog") version "3.1.0"
 
 
 
@@ -26,6 +28,7 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 application {
     mainClass.set("fr.univ_amu.m1info.mars_rover.simulator.App")
@@ -39,4 +42,7 @@ tasks.withType<Jar> {
 tasks.jar {
     archiveBaseName.set("mars-rover")
     archiveVersion.set("")
+}
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
 }
