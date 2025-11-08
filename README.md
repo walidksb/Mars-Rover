@@ -1,11 +1,6 @@
 [![CI Pipeline](https://etulab.univ-amu.fr/n24024683/mars-rover-nahili-abdelhakim-kesbi-walid/badges/master/pipeline.svg)](https://etulab.univ-amu.fr/n24024683/mars-rover-nahili-abdelhakim-kesbi-walid/-/pipelines)
 
 # 🚀 Mars Rover Simulator  
-
-## 👥 Project Members  
-- **Abdelhakim NAHILI**  
-- **Walid KESBI**  
-
 ---
 
 ## 📘 Project Overview  
@@ -70,3 +65,9 @@ This project demonstrates:
 * clean input/output data management using YAML,
 * and extensible design suitable for visualization or GUI simulation.
 | 🪐 A complete Mars exploration simulator built with clarity, modularity, and robustness in mind.
+----
+
+## 👥 Project Members  
+- **Abdelhakim NAHILI**  
+- **Walid KESBI**  
+
